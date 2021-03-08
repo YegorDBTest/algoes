@@ -16,11 +16,9 @@ def insertion_sort(items):
 
     n = len(items) # O(1)
     for i in range(1, n): # O(n - 1)
-        insertion = None
-        for j in range(i + 1): # O((n + 2) / 2)
-            if not insertion is None:
-                insertion, items[j] = items[j], insertion
-            elif items[i] < items[j]:
-                insertion = items[j]
-                items[j] = items[i]
+        for j in range(i, 0, -1): # from O(1) to O(n / 2)
+            if items[j] < items[j - 1]:
+                items[j - 1], items[j] = items[j], items[j - 1]
+            else:
+                break
     return items
