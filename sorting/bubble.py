@@ -94,3 +94,35 @@ def bubble_sort_with_latest_swap_index_save(items):
                     latest_swap_index = j
         yield items[next_item_index]
     yield items[n - 1]
+
+
+def cocktail_shaker_sort(items):
+    '''
+    Cocktail shaker sort.
+
+    items - list of comparable items.
+
+    ```python
+    >>> items = [1, 9, 5, 2, 7, 3, 8, 4, 6]
+    >>> sorted_items = cocktail_shaker_sort(items)
+    >>> sorted_items
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    ```
+
+    Total time cost:
+    ~ O(n^2)
+    '''
+
+    n = len(items) # O(1)
+    begin_index = 0
+    end_index = n - 1
+    while begin_index < end_index: # O(n - 1)
+        for i in range(end_index, begin_index, -1): # O(n / 2)
+            if items[i] < items[i - 1]:
+                items[i], items[i - 1] = items[i - 1], items[i]
+        begin_index += 1
+        for i in range(begin_index, end_index): # O((n - 1) / 2)
+            if items[i] > items[i + 1]:
+                items[i], items[i + 1] = items[i + 1], items[i]
+        end_index -= 1
+    return items
