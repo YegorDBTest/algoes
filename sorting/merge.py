@@ -60,3 +60,26 @@ def merge_sort(items):
         return items
     middle = n // 2;
     return merge(merge_sort(items[0:middle]), merge_sort(items[middle:]))
+
+
+def iterative_merge_sort(items):
+    '''
+    Iterative merge sort.
+
+    items - list of comparable items.
+
+    ```python
+    >>> items = [1, 9, 5, 2, 7, 3, 8, 4, 6]
+    >>> sorted_items = iterative_merge_sort(items)
+    >>> sorted_items
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    ```
+
+    Total time cost:
+    ~ O(n * log(n))
+    '''
+
+    queue = list(map(lambda i: [i], items))
+    while len(queue) > 1:
+        queue.insert(0, merge(queue.pop(), queue.pop()))
+    return queue[0]
