@@ -131,3 +131,32 @@ def quick_sort_partition_3(items, l, r):
             items[m2], items[i] = items[i], items[m2]
     items[m1], items[l] = items[l], items[m1]
     return m1, m2
+
+
+def quick_sort_3(items, l=0, r=None):
+    '''
+    3 parts quick sort.
+
+    items - list of comparable items.
+    l - start index
+    r - end index
+
+    ```python
+    >>> items = [1, 9, 5, 2, 7, 3, 8, 4, 6]
+    >>> quick_sort_3(items)
+    >>> items
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    ```
+
+    Total time cost:
+    ~ O(n * log(n))
+    '''
+
+    if r is None:
+        r = len(items) - 1
+    if l >= r:
+        return
+
+    m1, m2 = quick_sort_partition_3(items, l, r)
+    quick_sort(items, l=l, r=m1 - 1)
+    quick_sort(items, l=m2 + 1, r=r)
