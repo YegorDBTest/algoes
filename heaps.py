@@ -31,6 +31,9 @@ class BaseHeap:
             self._items[pi], self._items[i] = self._items[i], self._items[pi]
             index = parent_index
 
+    def _check_parent_and_child(self, parent_index, child_index):
+        return eval(f'self._items[parent_index] {self.UPPER}= self._items[child_index]')
+
     def _down_item(self, index):
         while True:
             child_index = None
@@ -39,7 +42,7 @@ class BaseHeap:
                 if chi > len(self._items):
                     continue
                 pci = child_index - 1 if child_index else None
-                if self._check_parent_and_childs(index - 1, chi - 1, pci)
+                if self._check_parent_and_childs(index - 1, chi - 1, pci):
                     child_index = chi
             if not child_index:
                 break
@@ -48,28 +51,17 @@ class BaseHeap:
             self._items[ci], self._items[i] = self._items[i], self._items[ci]
             index = child_index
 
-
-class MinHeap(BaseHeap):
-
-    def _check_parent_and_child(self, parent_index, child_index):
-        return self._items[parent_index] <= self._items[child_index]
-
     def _check_parent_and_childs(self, parent_index, child_index, prev_child_index):
         return (
-            self._items[child_index] < self._items[parent_index]
+            eval(f'self._items[child_index] {self.UPPER} self._items[parent_index]')
             and (prev_child_index is None
-                 or self._items[child_index] < self._items[prev_child_index])
+                 or eval(f'self._items[child_index] {self.UPPER} self._items[prev_child_index]'))
         )
+
+
+class MinHeap(BaseHeap):
+    UPPER = '<'
 
 
 class MaxHeap(BaseHeap):
-
-    def _check_parent_and_child(self, parent_index, child_index):
-        return self._items[parent_index] >= self._items[child_index]
-
-    def _check_parent_and_childs(self, parent_index, child_index, prev_child_index):
-        return (
-            self._items[child_index] > self._items[parent_index]
-            and (prev_child_index is None
-                 or self._items[child_index] > self._items[prev_child_index])
-        )
+    UPPER = '>'
