@@ -1,67 +1,58 @@
 import math
+import operator
 
 
 class BaseHeap:
 
     def __init__(self):
-        self._items = []
+        self.items = [None]
 
     def add_item(self, item):
-        self._items.append(item)
-        self._up_item(len(self._items))
+        self.items.append(item)
+        self._sift_up(len(self.items))
 
-    def extract_item(self, index):
-        if index > len(self._items):
+    def extract_item(self, idx):
+        n = len(self.items)
+        if idx >= n:
             return None
-        item = self._items[index - 1]
-        if index == len(self._items):
-            self._items.pop()
+        item = self.items[idx]
+        if idx == n - 1:
+            self.items.pop()
         else:
-            self._items[index - 1] = self._items.pop()
-            self._down_item(index)
+            self.items[idx] = self.items.pop()
+            self._sift_down(idx)
         return item
 
-    def _up_item(self, index):
-        while index > 1:
-            parent_index = math.floor(index / 2)
-            i = index - 1
-            pi = parent_index - 1
-            if self._check_parent_and_child(pi, i):
+    def _sift_up(self, idx):
+        while idx > 1:
+            p_idx = math.floor(idx / 2)
+            if self.gte(self.items[p_idx], self.items[idx]):
                 break
-            self._items[pi], self._items[i] = self._items[i], self._items[pi]
-            index = parent_index
+            self.items[p_idx], self.items[idx] = self.items[idx], self.items[p_idx]
+            idx = p_idx
 
-    def _check_parent_and_child(self, parent_index, child_index):
-        return eval(f'self._items[parent_index] {self.UPPER}= self._items[child_index]')
-
-    def _down_item(self, index):
+    def _sift_down(self, idx):
+        n = len(self.items)
         while True:
-            child_index = None
-            for i in range(2):
-                chi = index * 2 + i
-                if chi > len(self._items):
-                    continue
-                pci = child_index - 1 if child_index else None
-                if self._check_parent_and_childs(index - 1, chi - 1, pci):
-                    child_index = chi
-            if not child_index:
-                break
-            i = index - 1
-            ci = child_index - 1
-            self._items[ci], self._items[i] = self._items[i], self._items[ci]
-            index = child_index
+            l_idx = idx * 2
+            l_child = self.items[l_idx] if l_idx < n else self.MIN
+            r_idx = idx * 2 + 1
+            r_child = self.items[r_idx] if r_idx < n else self.MIN
 
-    def _check_parent_and_childs(self, parent_index, child_index, prev_child_index):
-        return (
-            eval(f'self._items[child_index] {self.UPPER} self._items[parent_index]')
-            and (prev_child_index is None
-                 or eval(f'self._items[child_index] {self.UPPER} self._items[prev_child_index]'))
-        )
+            if (self.gte(self.items[idx], l_child)
+                and self.gte(self.items[idx], r_child):
+                break
+
+            max_idx = l_idx if self.gte(l_child, r_child) else r_idx
+            self.items[max_idx], self.items[idx] = self.items[idx], self.items[max_idx]
+            idx = max_idx
 
 
 class MinHeap(BaseHeap):
-    UPPER = '<'
+    MIN = float('inf')
+    gte = operator.le
 
 
 class MaxHeap(BaseHeap):
-    UPPER = '>'
+    MIN = float('-inf')
+    gte = operator.ge
