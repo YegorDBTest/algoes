@@ -7,20 +7,22 @@ class BaseHeap:
     def __init__(self):
         self.items = [None]
 
-    def add_item(self, item):
-        self.items.append(item)
-        self._sift_up(len(self.items))
+    def __iter__(self):
+        while len(self.items) > 1:
+            yield self.pop()
 
-    def extract_item(self, idx):
-        n = len(self.items)
-        if idx >= n:
+    def push(self, item):
+        self.items.append(item)
+        self._sift_up(len(self.items) - 1)
+
+    def pop(self):
+        if len(self.items) < 2:
             return None
-        item = self.items[idx]
-        if idx == n - 1:
-            self.items.pop()
-        else:
-            self.items[idx] = self.items.pop()
-            self._sift_down(idx)
+        item = self.items[1]
+        last_item = self.items.pop()
+        if len(self.items) > 1:
+            self.items[1] = last_item
+            self._sift_down(1)
         return item
 
     def _sift_up(self, idx):
@@ -40,7 +42,7 @@ class BaseHeap:
             r_child = self.items[r_idx] if r_idx < n else self.MIN
 
             if (self.gte(self.items[idx], l_child)
-                and self.gte(self.items[idx], r_child):
+                and self.gte(self.items[idx], r_child)):
                 break
 
             max_idx = l_idx if self.gte(l_child, r_child) else r_idx
