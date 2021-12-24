@@ -1,3 +1,6 @@
+import random
+
+
 def quick_sort_partition(items, l, r):
     '''
     Quick sort partition.
@@ -192,3 +195,48 @@ def tail_recursive_quick_sort_3(items, l=0, r=None):
         else:
             tail_recursive_quick_sort_3(items, l=l, r=m1 - 1)
             l = m2 + 1
+
+
+def in_place_quick_sort(items, start=0, end=None):
+    '''
+    In place quick sort.
+
+    items - list of comparable items.
+    start - start index
+    end - end index
+
+    ```python
+    >>> items = [1, 9, 5, 2, 7, 3, 8, 4, 6]
+    >>> in_place_quick_sort(items)
+    >>> items
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    ```
+
+    Total time cost:
+    O(n * log(n))
+    '''
+
+    if end is None:
+        end = len(items)
+
+    if end - start < 2:
+        return
+
+    pivot = items[random.randrange(start, end)]
+    left = start
+    right = end - 1
+
+    while left <= right:
+        if items[left] > pivot and pivot >= items[right]:
+            items[left], items[right] = items[right], items[left]
+            left += 1
+            right -= 1
+            continue
+
+        if items[left] <= pivot:
+            left += 1
+        if items[right] > pivot:
+            right -= 1
+
+    in_place_quick_sort(items, start, left)
+    in_place_quick_sort(items, left, end)
